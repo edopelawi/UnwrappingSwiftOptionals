@@ -63,7 +63,7 @@ if let anotherName = name {
 }
 
 /*:
-And, since naming things is the [second hardest thing in Computer Science](http://martinfowler.com/bliki/TwoHardThings.html) 😉, we could reuse the variable name for the `if let` statement. The compiler will use the unwrapped version for the code inside the statement.
+And, since naming things is the [second hardest thing in Computer Science](http://martinfowler.com/bliki/TwoHardThings.html), we could reuse the variable name for the `if let` statement. The compiler will use the unwrapped version for the code inside the statement.
 */
 
 name = "Daffy Duck"
@@ -110,7 +110,7 @@ sampleEarlyReturnFunction(name)
 // Add another code here that uses `anotherName`...
 
 /*:
-Thankfully, Swift 2.0 provides a solution that allow us to return early cleanly:
+Thankfully, Swift 2.0 provides a solution that allows us to return early cleanly:
 
 ## 3: `guard let` unwrap
 
@@ -134,7 +134,7 @@ guardLetEarlyReturnFunction(nil)
 guardLetEarlyReturnFunction(name)
 
 /*:
-Still, there are times that we only need `if let` or `guard let` only to return a value, such as below:
+Neat, right? With `guard`, we could handle the outlier cases on the top of the code block, and proceed with the normal case below it. Still, there are times that we only need `if let` or `guard let` only to return a value, such as below:
 */
 
 func getValidString(string: String?) -> String {
@@ -172,13 +172,17 @@ func nilCoalescingGetValidString(string: String?) -> String {
 print(nilCoalescingGetValidString(nil))
 print(nilCoalescingGetValidString(name))
 
+let validName = nilCoalescingGetValidString(name)
+
+print(createGreetings(sailorName: validName))
+
 /*:
 
 Besides the common operators above, there's another way to unwrap optionals - which is based by the implentation of the optionals itself.
 
 ## 5: `switch` statement
 
-Why `switch` statement, you say? I found [Benedict Terhecte's](https://appventure.me/2015/10/17/advanced-practical-enum-examples/) blog post about advanced enum usage a few months ago. There's a simplified implementation of Swift's optional there, that turned out to be an (somewhat like) enum with associated values:
+Why `switch` statement, you say? Long story short, I found [Benedict Terhecte's](https://appventure.me/2015/10/17/advanced-practical-enum-examples/) blog post about advanced enum usage a few months ago. There's a simplified implementation of Swift's optional there, that turned out to be an (somewhat like) enum with associated values:
 */
 
 // Simplified implementation of Swift's Optional
@@ -233,7 +237,7 @@ class CalendarViewModel {
 
 /*:
 
-Though we could implement the `update(selectedDate:)` method above using "equal-`nil`" checking, but IMO, it's cleaner this way.
+Though we could implement the `update(selectedDate:)` method above using "equal-`nil`" checking, but IMO, it's more self-describing with `switch` pattern matching.
 
 ## Bonus: `flatMap` for Arrays
 
@@ -299,7 +303,7 @@ flattenedSailors.forEach { name in
 /*:
 The `duckSailors` and `sealSailors` above were `Strings` that nested inside a container - which is an array. Returning the exact array in `otherSailors`' `flatMap` block will flatten out the values inside it.
 
-If we revisit the simplified `Optional` implementation above, we could see that `Optional` is just another container - that may contain something (`.Some(T)`), or none (`.None`). That's why the flatMap operation filters out `nil`s - because those `Optional` contains nothing! 😉
+If we revisit the simplified `Optional` implementation above, we could see that `Optional` is just another container - that may contain something (`.Some(T)`), or none (`.None`). That's why the `flatMap` operation filters out `nil`s - because those `Optional` contains nothing! 😉
 
 I hope you find this `*.playground` file useful! See you later on future posts! 😄
 
