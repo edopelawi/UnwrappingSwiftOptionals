@@ -160,7 +160,7 @@ For this specific use case, Swift provides a simple shortcut:
 
 ## 4: Nil-coalescing operator (`??`)
 
-Based on the [documentation](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/Swift_Programming_Language/BasicOperators.html#//apple_ref/doc/uid/TP40014097-CH6-ID72), nil-coalescing operators (`??`) unwraps an optional if it isn't nil, and returns the other value otherwise. Simply put, it's a shortcut of `a != nil ? a! : b`.
+Based on the [documentation](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/Swift_Programming_Language/BasicOperators.html#//apple_ref/doc/uid/TP40014097-CH6-ID72), nil-coalescing operator (`??`) unwraps an optional if it isn't nil, and returns the other value otherwise. Simply put, it's a shortcut of `a != nil ? a! : b`.
 
 This allows us to implement the code above with less code:
 */
@@ -168,5 +168,145 @@ This allows us to implement the code above with less code:
 func nilCoalescingGetValidString(string: String?) -> String {
 	return string ?? ""
 }
+
+print(nilCoalescingGetValidString(nil))
+print(nilCoalescingGetValidString(name))
+
+/*:
+
+Besides the common operators above, there's another way to unwrap optionals - which is based by the implentation of the optionals itself.
+
+## 5: `switch` statement
+
+Why `switch` statement, you say? I found [Benedict Terhecte's](https://appventure.me/2015/10/17/advanced-practical-enum-examples/) blog post about advanced enum usage a few months ago. There's a simplified implementation of Swift's optional there, that turned out to be an (somewhat like) enum with associated values:
+*/
+
+// Simplified implementation of Swift's Optional
+enum MyOptional<T> {
+	case Some(T)
+	case None
+}
+
+/*:
+Knowing this, we could use `switch`'s pattern matching to unwrap its values:
+*/
+
+func printSailorName(sailorName sailorName: String?) {
+	
+	switch sailorName {
+	case .Some(let validName):
+		print(createGreetings(sailorName: validName))
+	case .None:
+		print("👺 The sailor name input is invalid!")
+	}
+}
+
+printSailorName(sailorName: nil)
+printSailorName(sailorName: name)
+
+/*:
+This is beneficial if we got two optionals and different conditions according to their values (or absence of it). On my latest project, I created a view model to cater date selection in a calendar. This is the *super* simplified version:
+*/
+
+import Foundation
+
+class CalendarViewModel {
+	
+	var selectedCheckInDate: NSDate?
+	var selectedCheckOutDate: NSDate?
+	
+	func update(selectedDate date: NSDate) {
+		
+		switch (selectedCheckInDate, selectedCheckOutDate) {
+		case (.None, .None):
+			selectedCheckInDate = date
+		case (.Some(_), .None):
+			selectedCheckOutDate = date
+		case (.Some(_), .Some(_)):
+			selectedCheckOutDate = nil
+			selectedCheckInDate = date
+		default:
+			break
+		}
+	}
+}
+
+/*:
+
+Though we could implement the `update(selectedDate:)` method above using "equal-`nil`" checking, but IMO, it's cleaner this way.
+
+## Bonus: `flatMap` for Arrays
+
+There's a `flatMap` built-in method for Swift Array that can be used to filter-out `nil` values. Here's an example:
+*/
+
+let sailorNames: [String?] = [
+	nil,
+	"Daffy Duck",
+	"Donald Duck",
+	nil,
+	"Darkwing Duck",
+	"Howard The Duck",
+]
+
+let unwrappedSailorNames = sailorNames.flatMap({ $0 })
+
+for sailorName in unwrappedSailorNames {
+	print(createGreetings(sailorName: sailorName))
+}
+
+/*:
+It will only work if we return `Optional` element on the `flatMap` block, though. Here's a sample to rest it:
+*/
+
+let unwrapFlatMapCount = sailorNames.flatMap { name -> String? in
+		return name
+}.count
+
+let otherOptionalFlatMapCount = sailorNames.flatMap { name -> Int? in
+	return name?.hashValue
+}.count
+
+let otherNormalFlatMapCount = sailorNames.flatMap { name -> Int in
+	return name?.hashValue ?? 0
+}.count
+
+print("Unwrap flatMap count: \(unwrapFlatMapCount)")
+print("Other optional flatMap count: \(unwrapFlatMapCount)")
+print("Other `normal` flatMap count: \(otherNormalFlatMapCount)")
+
+/*:
+
+CMIIW, but from what I know, flatMap is meant to take a nested value inside an array and put it to the surface level (hence the _flatten_), and map it as needed. At first, I only think this will be useful to flatten a nested array:
+*/
+
+let duckSailors = ["Daffy", "Donald", "Howard"]
+let sealSailors = ["Manatee", "Moby"]
+
+let otherSailors = [duckSailors, sealSailors]
+
+let flattenedSailors = otherSailors
+.flatMap { nameArray -> [String] in
+	return nameArray
+}
+	
+print("Flatten Sailor names: \(flattenedSailors)")
+
+flattenedSailors.forEach { name in
+	print(createGreetings(sailorName: name))
+}
+
+/*:
+The `duckSailors` and `sealSailors` above were `Strings` that nested inside a container - which is an array. Returning the exact array in `otherSailors`' `flatMap` block will flatten out the values inside it.
+
+If we revisit the simplified `Optional` implementation above, we could see that `Optional` is just another container - that may contain something (`.Some(T)`), or none (`.None`). That's why the flatMap operation filters out `nil`s - because those `Optional` contains nothing! 😉
+
+I hope you find this `*.playground` file useful! See you later on future posts! 😄
+
+_P.S: I'll try to post an updated version of this for Swift 3 soon! 😉_
+
+*/
+
+
 
 
