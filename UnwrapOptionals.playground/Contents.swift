@@ -11,7 +11,7 @@ func createGreetings(sailorName sailorName: String) -> String {
 var name: String?
 
 /*:
-Now, how will we pass it to our function?
+There are several possible ways to pass it to our function, let's run through them one by one:
 */
 
 /*:
