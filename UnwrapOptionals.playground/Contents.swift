@@ -15,7 +15,7 @@ There are several possible ways to pass it to our function, let's run through th
 */
 
 /*:
-## 1. Force-unwrap (!)
+## 1. Force-unwrap (`!`)
 
 Ah, the ol' forceful way. Adding bang / exclamation (!) mark after the variable is a sure way to keep the compiler from whining:
 */
@@ -158,7 +158,7 @@ func anotherGetValidString(string: String?) -> String {
 /*:
 For this specific use case, Swift provides a simple shortcut:
 
-## 4: Nil-coalescing operator (`??`)
+## 4: `nil`-coalescing operator (`??`)
 
 Based on the [documentation](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/Swift_Programming_Language/BasicOperators.html#//apple_ref/doc/uid/TP40014097-CH6-ID72), nil-coalescing operator (`??`) unwraps an optional if it isn't nil, and returns the other value otherwise. Simply put, it's a shortcut of `a != nil ? a! : b`.
 
@@ -182,7 +182,7 @@ Besides the common operators above, there's another way to unwrap optionals - wh
 
 ## 5: `switch` statement
 
-Why `switch` statement, you say? Long story short, I found [Benedict Terhecte's](https://appventure.me/2015/10/17/advanced-practical-enum-examples/) blog post about advanced enum usage a few months ago. There's a simplified implementation of Swift's optional there, that turned out to be an (somewhat like) enum with associated values:
+Why `switch` statement, you say? Long story short, I found [Benedict Terhecte's blog post](https://appventure.me/2015/10/17/advanced-practical-enum-examples/) about advanced enum usage a few months ago. There's a simplified implementation of Swift's optional there, that turned out to be an (somewhat like) enum with associated values:
 */
 
 // Simplified implementation of Swift's Optional
@@ -260,7 +260,7 @@ for sailorName in unwrappedSailorNames {
 }
 
 /*:
-It will only work if we return `Optional` element on the `flatMap` block, though. Here's a sample to rest it:
+It will only work if we return `Optional` element on the `flatMap` block, though. Here's a sample to test it:
 */
 
 let unwrapFlatMapCount = sailorNames.flatMap { name -> String? in
