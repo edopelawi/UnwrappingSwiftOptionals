@@ -4,7 +4,7 @@
 Let's assume we got a function that need a `String` input and an optional parameter:
 */
 
-func createGreetings(sailorName sailorName: String) -> String {
+func createGreetings(sailorName: String) -> String {
 	return "👮 Ahoy, \(sailorName)! Welcome to S.S. Salty Sailor, arrr!"
 }
 
@@ -22,7 +22,6 @@ Ah, the ol' forceful way. Adding bang / exclamation (!) mark after the variable 
 
 name = "Ol' Man Jenkins"
 print(createGreetings(sailorName: name!))
-
 /*:
 Still, problem will arise when the variable is `nil`. Uncommenting the `createGreetings()` call below will cause an error, since it's a `nil`.
 */
@@ -77,8 +76,8 @@ So, we got our hands on `if let`. While it's convenient, we could end up big or 
 */
 if let name = name {
 	
-	let uppercasedName = name.uppercaseString
-	let lowercasedName = name.lowercaseString
+	let uppercasedName = name.uppercased()
+	let lowercasedName = name.lowercased()
 	
 	// And whole other code here... just imagine it yourself 😁
 	
@@ -95,17 +94,17 @@ Assume the `if let` bracket above got several dozen lines of code - it would be 
 */
 
 
-func sampleEarlyReturnFunction(sampleName: String?) {
+func sampleEarlyReturnFunction(name: String?) {
 	
-	if sampleName == nil {
+	if name == nil {
 		return
 	}
 	
-	let anotherName = sampleName!
+	let anotherName = name!
 	print(createGreetings(sailorName: anotherName))
 }
 
-sampleEarlyReturnFunction(name)
+sampleEarlyReturnFunction(name: name)
 
 // Add another code here that uses `anotherName`...
 
@@ -117,9 +116,9 @@ Thankfully, Swift 2.0 provides a solution that allows us to return early cleanly
 `guard` syntax forces a code block to return early when its condition is not met. It also works with `let` for unwrapping optionals:
 */
 
-func guardLetEarlyReturnFunction(sampleName: String?) {
+func guardLetEarlyReturnFunction(name: String?) {
 	
-	guard let validName = sampleName else {
+	guard let validName = name else {
 		print("👺 \(#function): Invalid name provided!")
 		return
 	}
@@ -129,9 +128,9 @@ func guardLetEarlyReturnFunction(sampleName: String?) {
 	// Add whole other code here :)
 }
 
-guardLetEarlyReturnFunction(nil)
+guardLetEarlyReturnFunction(name: nil)
 
-guardLetEarlyReturnFunction(name)
+guardLetEarlyReturnFunction(name: name)
 
 /*:
 Neat, right? With `guard`, we could handle the outlier cases on the top of the code block, and proceed with the normal case below it. Still, there are times that we only need `if let` or `guard let` only to return a value, such as below:
@@ -169,10 +168,10 @@ func nilCoalescingGetValidString(string: String?) -> String {
 	return string ?? ""
 }
 
-print(nilCoalescingGetValidString(nil))
-print(nilCoalescingGetValidString(name))
+print(nilCoalescingGetValidString(string: nil))
+print(nilCoalescingGetValidString(string: name))
 
-let validName = nilCoalescingGetValidString(name)
+let validName = nilCoalescingGetValidString(string: name)
 
 print(createGreetings(sailorName: validName))
 
@@ -195,12 +194,12 @@ enum MyOptional<T> {
 Knowing this, we could use `switch`'s pattern matching to unwrap its values:
 */
 
-func printSailorName(sailorName sailorName: String?) {
+func printSailorName(sailorName: String?) {
 	
 	switch sailorName {
-	case .Some(let validName):
+	case .some(let validName):
 		print(createGreetings(sailorName: validName))
-	case .None:
+	case .none:
 		print("👺 The sailor name input is invalid!")
 	}
 }
@@ -222,11 +221,11 @@ class CalendarViewModel {
 	func update(selectedDate date: NSDate) {
 		
 		switch (selectedCheckInDate, selectedCheckOutDate) {
-		case (.None, .None):
+		case (.none, .none):
 			selectedCheckInDate = date
-		case (.Some(_), .None):
+		case (.some(_), .none):
 			selectedCheckOutDate = date
-		case (.Some(_), .Some(_)):
+		case (.some(_), .some(_)):
 			selectedCheckOutDate = nil
 			selectedCheckInDate = date
 		default:
@@ -310,6 +309,12 @@ I hope you find this `*.playground` file useful! See you later on future posts! 
 _P.S: I'll try to post an updated version of this for Swift 3 soon! 😉_
 
 */
+
+
+enum ConfirmationData {
+	case FirstCase(percentage: Float, redeemTotal: Float)
+	case SecondCase
+}
 
 
 
